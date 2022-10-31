@@ -3,9 +3,9 @@
 * {
     box-sizing: border-box;
     font-family: 'Open Sans', sans-serif;
-    background-color: #303030;
-    color: white;
-    outline: 1px solid red;
+    background-color: peru;
+    color: black;
+    /* outline: 1px solid red; */
 }
 
 body {
@@ -19,15 +19,22 @@ body {
 
 footer {
     margin-top: auto;
-    border-top: 3px solid white;
+    border-top: 3px solid chocolate;
 }
 
 p {
     margin: 0;
 }
 
-h1 {
-    text-align: center;
+header {
+    display: flex;
+    justify-content:space-around;
+    margin-bottom: 1rem;
+}
+
+#create {
+    font-size: 5rem;
+    color: chocolate;
 }
 
 .cards {
@@ -36,17 +43,29 @@ h1 {
 }
 
 .card {
-    width: 20%;
-    background-color: pink;
+    width: 40%;
+    background-color: chocolate;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
 }
 
 .card * {
-    background-color: pink;
+    background-color: chocolate;
     color: black;
 }
 
 .name {
     width: 67%;
+}
+
+::placeholder {
+    color: dimgray;
+    font-weight: bold;
+}
+
+input[type="text"], textarea {
+    color: white !important; 
+    font-weight: bold !important;
 }
 
 .status-select {
@@ -63,8 +82,31 @@ h1 {
 
 .remaining {
     width: 100%;
+    color: firebrick;
+    font-weight: bold;
+    text-align: center;
+    font-variant: small-caps;
 }
 
 label {
     margin-right: 1rem;
+}
+
+button {
+    height: fit-content;
+    width: fit-content;
+    border: none;
+}
+
+button:hover, select:hover, #todo:hover, #doing:hover, #done:hover, fieldset label:hover, #name:hover, #urgence:hover {
+    cursor:grab;
+}
+
+.trash {
+    font-size: 2rem;
+}
+
+.trash-c {
+    display: flex;
+    justify-content: flex-end;
 }

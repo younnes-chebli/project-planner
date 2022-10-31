@@ -9,12 +9,30 @@
     <title>Project Planner</title>
 </head>
 <body>
-    <h1>Plan IT!</h1>
+    <header>
+        <fieldset>
+            <legend>Filter by status</legend>
+            <input type="radio" name="status" value="todo" id="todo">
+            <label for="todo">TO DO</label>
+            <input type="radio" name="status" id="doing">
+            <label for="doing">DOING</label>
+            <input type="radio" name="status" id="done">
+            <label for="done">DONE</label>
+        </fieldset>
+        <fieldset>
+            <legend>Sort by</legend>
+            <input type="radio" name="sort" value="urgence" id="urgence">
+            <label for="urgence">Urgence</label>
+            <input type="radio" name="sort" id="name">
+            <label for="name">Name</label>
+        </fieldset>
+        <button><i class="fa-regular fa-square-plus" id="create"></i></button>
+    </header>
     <div class="cards">
         <div class="card">
             <input type="text" class="name" placeholder="task name">
             <select class="status-select">
-                <option value="to do">TO DO</option>
+                <option value="todo">TO DO</option>
                 <option value="doing">DOING</option>
                 <option value="done">DONE</option>
             </select>
@@ -24,8 +42,10 @@
                 <input type="date">
             </div>
             <p class="remaining">in 5 days!</p>
+            <div class="trash-c">
+                <button><i class="fa-solid fa-trash trash"></i></button>
+            </div>
         </div>
-        
     </div>
 
     <footer>
