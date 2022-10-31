@@ -5,7 +5,7 @@
     font-family: 'Open Sans', sans-serif;
     background-color: #303030;
     color: white;
-    /* outline: 1px solid red; */
+    outline: 1px solid red;
 }
 
 body {
@@ -20,4 +20,51 @@ body {
 footer {
     margin-top: auto;
     border-top: 3px solid white;
+}
+
+p {
+    margin: 0;
+}
+
+h1 {
+    text-align: center;
+}
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.card {
+    width: 20%;
+    background-color: pink;
+}
+
+.card * {
+    background-color: pink;
+    color: black;
+}
+
+.name {
+    width: 67%;
+}
+
+.status-select {
+    width: 27%;
+}
+
+.description, .remaining {
+    width: 70%;
+}
+
+.due-date-c {
+    width: 100%;
+}
+
+.remaining {
+    width: 100%;
+}
+
+label {
+    margin-right: 1rem;
 }
