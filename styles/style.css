@@ -29,12 +29,11 @@ p {
 header {
     display: flex;
     justify-content:space-around;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 }
 
 #create {
-    font-size: 5rem;
-    color: chocolate;
+    font-size: 4rem;
 }
 
 .cards {
