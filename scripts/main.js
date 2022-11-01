@@ -7,7 +7,24 @@ var sortType = 0;
 var filterType = 0;
 
 const sortByName = () => {
+    const tasks = document.querySelectorAll(".card");
+    const tasksArray = Array.from(tasks);
+    cards.innerHTML = "";
+    
+    tasksArray.sort((a, b) => {
+        // return b.querySelector("input").value - a.querySelector("input").value;
+        if(a.querySelector("input").value < b.querySelector("input").value) {
+            return -1;
+        } else if (a.querySelector("input").value > b.querySelector("input").value) {
+            return 1;
+        } else {
+            return 0;
+        }
+    });
 
+    for(const task of tasksArray) {
+        cards.append(task);
+    }
 };
 
 const sortByUrgence = () => {
