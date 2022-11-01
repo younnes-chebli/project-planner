@@ -1,7 +1,27 @@
-////// create
-
 const createButton = document.getElementById("create");
 const cards = document.getElementById("cards");
+
+const msToDays = (ms) => {
+    return Math.floor(ms / (24*60*60*1000));
+};
+
+const isBefore = (ms) => {
+    return ms < Date.now();
+};
+
+const displayRemaining = (e) => {
+    const remaining = e.path[2].querySelector("p");
+    remaining.innerHTML = "";
+    const dateStringIn = e.target.value;
+    const dateInMs = Date.parse(dateStringIn);
+    let daysRemaining;
+
+    if(!isBefore(dateInMs)) {
+        daysRemaining = msToDays(dateInMs) - msToDays(Date.now());
+        remaining.innerHTML = `in ${daysRemaining} days!`;
+    }
+
+};
 
 const createTask = () => {
     const card = document.createElement("div");
@@ -35,7 +55,9 @@ const createTask = () => {
     const dueDateC = document.createElement("div");
     dueDateC.classList.add("due-date");
     const dueDateLabel = document.createElement("label");
+    dueDateLabel.innerHTML = "Due date";
     const dueDateInput = document.createElement("input");
+    dueDateInput.addEventListener("change", displayRemaining);
     dueDateInput.type = "date";
     dueDateC.append(dueDateLabel, dueDateInput);
 
@@ -56,3 +78,4 @@ const createTask = () => {
 };
 
 createButton.addEventListener("click", createTask);
+
