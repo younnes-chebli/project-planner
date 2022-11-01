@@ -1,5 +1,26 @@
 const createButton = document.getElementById("create");
 const cards = document.getElementById("cards");
+//0: none, 1: urgence, 2: name
+var sortType = 0;
+//0: none, 1: todo, 2: doing, 3: done
+var filterType = 0;
+
+const sortByName = () => {
+
+};
+
+const sortByUrgence = () => {
+
+} ;
+
+const sort = () => {
+    const tasks = document.querySelectorAll(".card");
+    switch(sortType) {
+        case 1: sortByUrgence();
+        break;
+        case 2: sortByName();
+    }
+};
 
 const msToDays = (ms) => {
     return Math.floor(ms / (24*60*60*1000));
@@ -79,3 +100,18 @@ const createTask = () => {
 
 createButton.addEventListener("click", createTask);
 
+const urgenceSort = document.getElementById("urgence-sort");
+const nameSort = document.getElementById("name-sort");
+
+const enableSortByName = () => {
+    sort = 2;
+    sort();
+};
+
+const enableSortByUrgence = () => {
+    sort = 1;
+    sort();
+};
+
+urgenceSort.addEventListener("click", enableSortByUrgence);
+nameSort.addEventListener("click", enableSortByName);
