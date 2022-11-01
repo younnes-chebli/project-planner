@@ -1,5 +1,6 @@
 const createButton = document.getElementById("create");
 const cards = document.getElementById("cards");
+const max = Number.MAX_VALUE;
 //0: none, 1: urgence, 2: name
 var sortType = 0;
 //0: none, 1: todo, 2: doing, 3: done
@@ -10,7 +11,17 @@ const sortByName = () => {
 };
 
 const sortByUrgence = () => {
+    const tasks = document.querySelectorAll(".card");
+    const tasksArray = Array.from(tasks);
+    cards.innerHTML = "";
+    
+    tasksArray.sort((a, b) => {
+        return Number(a.querySelector("p").getAttribute("days-left")) - Number(b.querySelector("p").getAttribute("days-left"));
+    });
 
+    for(const task of tasksArray) {
+        cards.append(task);
+    }
 } ;
 
 const sort = () => {
@@ -19,6 +30,7 @@ const sort = () => {
         case 1: sortByUrgence();
         break;
         case 2: sortByName();
+        break;
     }
 };
 
@@ -40,8 +52,10 @@ const displayRemaining = (e) => {
     if(!isBefore(dateInMs)) {
         daysRemaining = msToDays(dateInMs) - msToDays(Date.now());
         remaining.innerHTML = `in ${daysRemaining} days!`;
+        remaining.setAttribute("days-left", `${daysRemaining}`);
     }
 
+    sort();
 };
 
 const createTask = () => {
@@ -84,6 +98,7 @@ const createTask = () => {
 
     const remaining = document.createElement("p");
     remaining.classList.add("remaining");
+    remaining.setAttribute("days-left", `${max}`);
 
     const trashC = document.createElement("div");
     trashC.classList.add("trash-c");
@@ -96,6 +111,8 @@ const createTask = () => {
     card.append(nameInput, statusSelect, description, dueDateC, remaining, trashC);
 
     cards.append(card);
+
+    sort();
 };
 
 createButton.addEventListener("click", createTask);
@@ -104,12 +121,12 @@ const urgenceSort = document.getElementById("urgence-sort");
 const nameSort = document.getElementById("name-sort");
 
 const enableSortByName = () => {
-    sort = 2;
+    sortType = 2;
     sort();
 };
 
 const enableSortByUrgence = () => {
-    sort = 1;
+    sortType = 1;
     sort();
 };
 
