@@ -97,7 +97,7 @@ button {
     border: none;
 }
 
-button:hover, select:hover, #todo:hover, #doing:hover, #done:hover, fieldset label:hover, #name:hover, #urgence:hover {
+button:hover {
     cursor:grab;
 }
 

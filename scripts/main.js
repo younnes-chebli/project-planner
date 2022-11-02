@@ -5,14 +5,58 @@ const max = Number.MAX_VALUE;
 var sortType = 0;
 //0: none, 1: todo, 2: doing, 3: done
 var filterType = 0;
+const urgenceSort = document.getElementById("urgence-sort");
+const all = document.getElementById("all");
+const nameSort = document.getElementById("name-sort");
+const todoFilter = document.getElementById("todo");
+const doingFilter = document.getElementById("doing");
+const doneFilter = document.getElementById("done");
 
-const sortByName = () => {
+const disableFilters = () => {
+    todoFilter.disabled = true;
+    doingFilter.disabled = true;
+    doneFilter.disabled = true;
+    all.disabled = true;
+};
+
+const activateFilters = () => {
+    todoFilter.disabled = false;
+    doingFilter.disabled = false;
+    doneFilter.disabled = false;
+    all.disabled = false;
+};
+
+const checkFilters = () => {
     const tasks = document.querySelectorAll(".card");
+    if(tasks.length == 0) {
+        disableFilters();
+    } else {
+        activateFilters();
+    }
+};
+
+const resetFilter = () =>{
+    const tasks = document.querySelectorAll(".card");
+    for(const task of tasks) {
+        task.style.visibility = "visible";
+    }
+    filterType = 0;
+    todoFilter.checked = false;
+    doingFilter.checked = false;
+    doneFilter.checked = false;
+    all.checked = true;
+};
+
+const refresh = () => {
+    sort();
+    filter();
+};
+
+const sortByName = (tasks) => {
     const tasksArray = Array.from(tasks);
     cards.innerHTML = "";
     
     tasksArray.sort((a, b) => {
-        // return b.querySelector("input").value - a.querySelector("input").value;
         if(a.querySelector("input").value < b.querySelector("input").value) {
             return -1;
         } else if (a.querySelector("input").value > b.querySelector("input").value) {
@@ -27,8 +71,7 @@ const sortByName = () => {
     }
 };
 
-const sortByUrgence = () => {
-    const tasks = document.querySelectorAll(".card");
+const sortByUrgence = (tasks) => {
     const tasksArray = Array.from(tasks);
     cards.innerHTML = "";
     
@@ -44,9 +87,45 @@ const sortByUrgence = () => {
 const sort = () => {
     const tasks = document.querySelectorAll(".card");
     switch(sortType) {
-        case 1: sortByUrgence();
+        case 1: sortByUrgence(tasks);
         break;
-        case 2: sortByName();
+        case 2: sortByName(tasks);
+        break;
+    }
+};
+
+const filterByTodo = (tasks) => {
+    for(const task of tasks) {
+        if(task.querySelector("select :nth-child(2)").selected != true) {
+            task.style.visibility = "hidden";
+        }
+    }
+};
+
+const filterByDoing = (tasks) => {
+    for(const task of tasks) {
+        if(task.querySelector("select :nth-child(3)").selected != true) {
+            task.style.visibility = "hidden";
+        }
+    }
+};
+
+const filterByDone = (tasks) => {
+    for(const task of tasks) {
+        if(task.querySelector("select :nth-child(4)").selected != true) {
+            task.style.visibility = "hidden";
+        }
+    }
+};
+
+const filter = () => {
+    const tasks = document.querySelectorAll(".card");
+    switch(filterType) {
+        case 1: filterByTodo(tasks);
+        break;
+        case 2: filterByDoing(tasks);
+        break;
+        case 3: filterByDone(tasks);
         break;
     }
 };
@@ -72,12 +151,13 @@ const displayRemaining = (e) => {
         remaining.setAttribute("days-left", `${daysRemaining}`);
     }
 
-    sort();
+    refresh();
 };
 
 const createTask = () => {
     const card = document.createElement("div");
     card.classList.add("card");
+    resetFilter();
 
     const nameInput = document.createElement("input");
     nameInput.type = "text";
@@ -86,17 +166,21 @@ const createTask = () => {
 
     const statusSelect = document.createElement("select");
     statusSelect.classList.add("status-select");
+    const status = document.createElement("option");
+    status.value = "";
+    status.innerHTML = "STATUS";
+    status.selected= true;
+    status.disabled = true;
     const todoOption = document.createElement("option");
     todoOption.value = "todo";
-    todoOption.selected = true;
     todoOption.innerHTML = "TO DO";
     const doingOption = document.createElement("option");
-    doingOption.value = "doint";
+    doingOption.value = "doing";
     doingOption.innerHTML = "DOING";
     const doneOption = document.createElement("option");
     doneOption.value = "done";
     doneOption.innerHTML = "DONE";
-    statusSelect.append(todoOption, doingOption, doneOption);
+    statusSelect.append(status, todoOption, doingOption, doneOption);
 
     const description = document.createElement("textarea");
     description.classList.add("description");
@@ -129,23 +213,52 @@ const createTask = () => {
 
     cards.append(card);
 
-    sort();
+    refresh();
+    checkFilters();
 };
 
 createButton.addEventListener("click", createTask);
 
-const urgenceSort = document.getElementById("urgence-sort");
-const nameSort = document.getElementById("name-sort");
-
 const enableSortByName = () => {
     sortType = 2;
-    sort();
+    refresh();
 };
 
 const enableSortByUrgence = () => {
     sortType = 1;
-    sort();
+    refresh();
 };
 
 urgenceSort.addEventListener("click", enableSortByUrgence);
 nameSort.addEventListener("click", enableSortByName);
+
+const enableTodoFilter = () => {
+    resetFilter();
+    filterType = 1;
+    todoFilter.checked = true;
+    all.checked = false;
+    refresh();
+};
+
+const enableDoingfilter = () => {
+    resetFilter();
+    filterType = 2;
+    doingFilter.checked = true;
+    all.checked = false;
+    refresh()
+};
+
+const enableDoneFilter = () => {
+    resetFilter();
+    filterType = 3;
+    doneFilter.checked = true;
+    all.checked = false;
+    refresh();
+};
+
+all.addEventListener("click", resetFilter);
+todoFilter.addEventListener("click", enableTodoFilter);
+doingFilter.addEventListener("click", enableDoingfilter);
+doneFilter.addEventListener("click", enableDoneFilter);
+
+checkFilters();

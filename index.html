@@ -12,6 +12,8 @@
     <header>
         <fieldset>
             <legend>Filter by status</legend>
+            <input type="radio" name="status" value="all" id="all">
+            <label for="all">ALL</label>
             <input type="radio" name="status" value="todo" id="todo">
             <label for="todo">TO DO</label>
             <input type="radio" name="status" id="doing">
@@ -22,9 +24,9 @@
         <fieldset>
             <legend>Sort by</legend>
             <input type="radio" name="sort" value="urgence" id="urgence-sort">
-            <label for="urgence">Urgence</label>
+            <label for="urgence-sort">Urgence</label>
             <input type="radio" name="sort" id="name-sort">
-            <label for="name">Name</label>
+            <label for="name-sort">Name</label>
         </fieldset>
         <button><i class="fa-regular fa-square-plus" id="create"></i></button>
     </header>
@@ -32,6 +34,7 @@
         <!-- <div class="card">
             <input type="text" class="name" placeholder="task name">
             <select class="status-select">
+                <option value="" disabled selected>STATUS</option>
                 <option value="todo">TO DO</option>
                 <option value="doing">DOING</option>
                 <option value="done">DONE</option>
