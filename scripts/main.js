@@ -11,6 +11,7 @@ const nameSort = document.getElementById("name-sort");
 const todoFilter = document.getElementById("todo");
 const doingFilter = document.getElementById("doing");
 const doneFilter = document.getElementById("done");
+var actualTasks = document.querySelectorAll(".card");
 
 const disableFilters = () => {
     todoFilter.disabled = true;
@@ -27,29 +28,49 @@ const activateFilters = () => {
 };
 
 const checkFilters = () => {
-    const tasks = document.querySelectorAll(".card");
-    if(tasks.length == 0) {
+    if(actualTasks.length == 0) {
         disableFilters();
     } else {
         activateFilters();
     }
 };
 
-const resetFilter = () =>{
-    const tasks = document.querySelectorAll(".card");
-    for(const task of tasks) {
-        task.style.visibility = "visible";
+const filterByTodo = () => {
+    cards.innerHTML = "";
+    for(const task of actualTasks) {
+        if(task.querySelector("select :nth-child(2)").selected == true) {
+            cards.append(task);
+        }
     }
-    filterType = 0;
-    todoFilter.checked = false;
-    doingFilter.checked = false;
-    doneFilter.checked = false;
-    all.checked = true;
 };
 
-const refresh = () => {
-    sort();
-    filter();
+const filterByDoing = () => {
+    cards.innerHTML = "";
+    for(const task of actualTasks) {
+        if(task.querySelector("select :nth-child(3)").selected == true) {
+            cards.append(task);
+        }
+    }
+};
+
+const filterByDone = () => {
+    cards.innerHTML = "";
+    for(const task of actualTasks) {
+        if(task.querySelector("select :nth-child(4)").selected == true) {
+            cards.append(task);
+        }
+    }
+};
+
+const filter = () => {
+    switch(filterType) {
+        case 1: filterByTodo();
+        break;
+        case 2: filterByDoing();
+        break;
+        case 3: filterByDone();
+        break;
+    }
 };
 
 const sortByName = (tasks) => {
@@ -65,7 +86,7 @@ const sortByName = (tasks) => {
             return 0;
         }
     });
-
+    
     for(const task of tasksArray) {
         cards.append(task);
     }
@@ -74,7 +95,7 @@ const sortByName = (tasks) => {
 const sortByUrgence = (tasks) => {
     const tasksArray = Array.from(tasks);
     cards.innerHTML = "";
-    
+
     tasksArray.sort((a, b) => {
         return Number(a.querySelector("p").getAttribute("days-left")) - Number(b.querySelector("p").getAttribute("days-left"));
     });
@@ -85,49 +106,17 @@ const sortByUrgence = (tasks) => {
 } ;
 
 const sort = () => {
-    const tasks = document.querySelectorAll(".card");
     switch(sortType) {
-        case 1: sortByUrgence(tasks);
+        case 1: sortByUrgence(actualTasks);
         break;
-        case 2: sortByName(tasks);
+        case 2: sortByName(actualTasks);
         break;
     }
 };
 
-const filterByTodo = (tasks) => {
-    for(const task of tasks) {
-        if(task.querySelector("select :nth-child(2)").selected != true) {
-            task.style.visibility = "hidden";
-        }
-    }
-};
-
-const filterByDoing = (tasks) => {
-    for(const task of tasks) {
-        if(task.querySelector("select :nth-child(3)").selected != true) {
-            task.style.visibility = "hidden";
-        }
-    }
-};
-
-const filterByDone = (tasks) => {
-    for(const task of tasks) {
-        if(task.querySelector("select :nth-child(4)").selected != true) {
-            task.style.visibility = "hidden";
-        }
-    }
-};
-
-const filter = () => {
-    const tasks = document.querySelectorAll(".card");
-    switch(filterType) {
-        case 1: filterByTodo(tasks);
-        break;
-        case 2: filterByDoing(tasks);
-        break;
-        case 3: filterByDone(tasks);
-        break;
-    }
+const refresh = () => {
+    sort();
+    filter();
 };
 
 const msToDays = (ms) => {
@@ -151,6 +140,19 @@ const displayRemaining = (e) => {
         remaining.setAttribute("days-left", `${daysRemaining}`);
     }
 
+    refresh();
+};
+
+const resetFilter = () =>{
+    cards.innerHTML = "";
+    for(const task of actualTasks) {
+        cards.append(task);
+    }
+    filterType = 0;
+    todoFilter.checked = false;
+    doingFilter.checked = false;
+    doneFilter.checked = false;
+    all.checked = true;
     refresh();
 };
 
@@ -213,6 +215,7 @@ const createTask = () => {
 
     cards.append(card);
 
+    actualTasks = document.querySelectorAll(".card");
     refresh();
     checkFilters();
 };
