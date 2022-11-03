@@ -46,6 +46,7 @@ header {
     background-color: chocolate;
     margin-right: 1rem;
     margin-bottom: 1rem;
+    display: block;
 }
 
 .card * {

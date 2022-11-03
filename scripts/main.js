@@ -35,29 +35,41 @@ const checkFilters = () => {
     }
 };
 
+const resetDisplay = () => {
+    for(const task of actualTasks) {
+        task.style.display = "block";
+    }
+};
+
 const filterByTodo = () => {
-    cards.innerHTML = "";
+    resetDisplay();
     for(const task of actualTasks) {
         if(task.querySelector("select :nth-child(2)").selected == true) {
-            cards.append(task);
+            task.style.display = "block";
+        } else {
+            task.style.display = "none";
         }
     }
 };
 
 const filterByDoing = () => {
-    cards.innerHTML = "";
+    resetDisplay();
     for(const task of actualTasks) {
         if(task.querySelector("select :nth-child(3)").selected == true) {
-            cards.append(task);
+            task.style.display = "block";
+        } else {
+            task.style.display = "none";
         }
     }
 };
 
 const filterByDone = () => {
-    cards.innerHTML = "";
+    resetDisplay();
     for(const task of actualTasks) {
         if(task.querySelector("select :nth-child(4)").selected == true) {
-            cards.append(task);
+            task.style.display = "block";
+        } else {
+            task.style.display = "none";
         }
     }
 };
@@ -144,10 +156,7 @@ const displayRemaining = (e) => {
 };
 
 const resetFilter = () =>{
-    cards.innerHTML = "";
-    for(const task of actualTasks) {
-        cards.append(task);
-    }
+    resetDisplay();
     filterType = 0;
     todoFilter.checked = false;
     doingFilter.checked = false;
@@ -236,7 +245,6 @@ urgenceSort.addEventListener("click", enableSortByUrgence);
 nameSort.addEventListener("click", enableSortByName);
 
 const enableTodoFilter = () => {
-    resetFilter();
     filterType = 1;
     todoFilter.checked = true;
     all.checked = false;
@@ -244,7 +252,6 @@ const enableTodoFilter = () => {
 };
 
 const enableDoingfilter = () => {
-    resetFilter();
     filterType = 2;
     doingFilter.checked = true;
     all.checked = false;
@@ -252,7 +259,6 @@ const enableDoingfilter = () => {
 };
 
 const enableDoneFilter = () => {
-    resetFilter();
     filterType = 3;
     doneFilter.checked = true;
     all.checked = false;
