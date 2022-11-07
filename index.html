@@ -23,14 +23,30 @@
         </fieldset>
         <fieldset>
             <legend>Sort by</legend>
+            <input type="radio" name="sort" value="none" id="none">
+            <label for="urgence-sort">None</label>
             <input type="radio" name="sort" value="urgence" id="urgence-sort">
             <label for="urgence-sort">Urgence</label>
             <input type="radio" name="sort" id="name-sort">
             <label for="name-sort">Name</label>
         </fieldset>
-        <button><i class="fa-regular fa-square-plus" id="create"></i></button>
     </header>
-    <div id="cards"></div>
+    <fieldset>
+        <legend>Add new task</legend>
+        <form action="" id="task-form">
+            <input type="text" name="name" placeholder="task name">
+            <select name="selectStatus">
+                <option value="todo">TODO</option>
+                <option value="doing">DOING</option>
+                <option value="done">DONE</option>
+            </select>
+            <textarea name="description" cols="25" rows="5" placeholder="description"></textarea>
+            <label>Due date</label>
+            <input type="date" name="dueDate">
+            <button type="submit"><i class="fa-regular fa-square-plus" id="create"></i></button>
+        </form>
+    </fieldset>
+    <div id="tasks"></div>
 
     <footer>
         <p>Younnes Chebli - 2022</p>
