@@ -54,7 +54,8 @@ const generateTask = (task) => {
     nameInput.placeholder = "task name";
     nameInput.value = task.name;
     nameInput.addEventListener("input", (e) => {
-        const i = card.getAttribute("ID");
+        taskToUpdate = taskList.filter(el => el.ID === task.ID);
+        const i =  taskList.indexOf(taskToUpdate[0]);
         taskList[i].name = e.target.value;
         save();
     });
