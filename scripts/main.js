@@ -1,9 +1,19 @@
 const taskForm = document.getElementById("task-form");
-const tasks = document.getElementById("tasks");
-const taskList = [];
-let nextID = 0;
+const tasksDisplay = document.getElementById("tasks");
+let taskList = [];
 const max = Number.MAX_VALUE;
 const lsTasks = localStorage.getItem("tasks");
+let parsedLsTasks;
+let nextID;
+if(lsTasks != null) {
+    parsedLsTasks = JSON.parse(lsTasks);
+    for(const parsedLsTask of parsedLsTasks) {
+        taskList.push(parsedLsTask);
+    }
+    nextID = parsedLsTasks[parsedLsTasks.length - 1].ID + 1;
+} else {
+    nextID = 0;
+}
 
 const save = () => {
     localStorage.setItem("tasks", JSON.stringify(taskList));
@@ -114,14 +124,14 @@ const generateTask = (task) => {
 
     card.append(nameInput, statusSelect, description, dueDateC, remaining, trashC);
 
-    tasks.append(card);
+    tasksDisplay.append(card);
 
     //refresh();
     //checkFilters();
 };
 
 const generateTasks = (taskList) => {
-    tasks.innerHTML = "";
+    tasksDisplay.innerHTML = "";
     for(const task of taskList) {
         generateTask(task);
     }
@@ -132,11 +142,13 @@ taskForm.addEventListener("submit", (e) => {
     const formData = Object.fromEntries(new FormData(taskForm));
     formData.ID = nextID;
     nextID++;
+    console.log(taskList);
     taskList.push(formData);
+    console.log(taskList);
     save();
     generateTasks(taskList);
 });
 
 if(lsTasks != null) {
-    generateTasks(JSON.parse(lsTasks));   
+    generateTasks(parsedLsTasks);   
 }
