@@ -14,6 +14,12 @@ if(lsTasks != null) {
 } else {
     nextID = 1;
 }
+//0: none, 1: urgence, 2: name
+var sortType = 0;
+//0: none, 1: todo, 2: doing, 3: done
+var filterType = 0;
+const urgenceSort = document.getElementById("urgence-sort");
+const nameSort = document.getElementById("name-sort");
 
 const save = () => {
     localStorage.setItem("tasks", JSON.stringify(taskList));
@@ -25,6 +31,53 @@ const emptyLS = () => {
 
 const noCards = () => {
     return document.querySelectorAll(".card").length == 0;
+};
+
+const sortByName = (cards) => {
+    const cardsArray = Array.from(cards);
+    tasksDisplay.innerHTML = "";
+    
+    cardsArray.sort((a, b) => {
+        if(a.querySelector("input").value < b.querySelector("input").value) {
+            return -1;
+        } else if (a.querySelector("input").value > b.querySelector("input").value) {
+            return 1;
+        } else {
+            return 0;
+        }
+    });
+    
+    for(const task of cardsArray) {
+        tasksDisplay.append(task);
+    }
+}
+
+const sortByUrgence = (cards) => {
+    const cardsArray = Array.from(cards);
+    tasksDisplay.innerHTML = "";
+
+    cardsArray.sort((a, b) => {
+        return Number(a.querySelector("p").getAttribute("days-left")) - Number(b.querySelector("p").getAttribute("days-left"));
+    });
+
+    for(const task of cardsArray) {
+        tasksDisplay.append(task);
+    }
+} ;
+
+const sort = () => {
+    const cards = document.querySelectorAll(".card");
+    switch(sortType) {
+        case 1: sortByUrgence(cards);
+        break;
+        case 2: sortByName(cards);
+        break;
+    }
+};
+
+const refresh = () => {
+    sort();
+    // filter();
 };
 
 const msToDays = (ms) => {
@@ -183,3 +236,16 @@ taskForm.addEventListener("submit", (e) => {
 if(lsTasks != null) {
     generateTasks(parsedLsTasks);   
 }
+
+const enableSortByName = () => {
+    sortType = 2;
+    refresh();
+};
+
+const enableSortByUrgence = () => {
+    sortType = 1;
+    refresh();
+};
+
+urgenceSort.addEventListener("click", enableSortByUrgence);
+nameSort.addEventListener("click", enableSortByName);
