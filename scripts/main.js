@@ -20,6 +20,10 @@ var sortType = 0;
 var filterType = 0;
 const urgenceSort = document.getElementById("urgence-sort");
 const nameSort = document.getElementById("name-sort");
+const all = document.getElementById("all");
+const todoFilter = document.getElementById("todo");
+const doingFilter = document.getElementById("doing");
+const doneFilter = document.getElementById("done");
 
 const save = () => {
     localStorage.setItem("tasks", JSON.stringify(taskList));
@@ -31,6 +35,64 @@ const emptyLS = () => {
 
 const noCards = () => {
     return document.querySelectorAll(".card").length == 0;
+};
+
+const getDisplayedCards = () => {
+    return document.querySelectorAll(".card");
+};
+
+const resetDisplay = () => {
+    const cards = getDisplayedCards();
+    for(const card of cards) {
+        card.style.display = "block";
+    }
+};
+
+const filterByTodo = () => {
+    resetDisplay();
+    const cards = getDisplayedCards();
+    for(const card of cards) {
+        if(card.querySelector("select :nth-child(1)").selected == true) {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+    }
+};
+
+const filterByDoing = () => {
+    resetDisplay();
+    const cards = getDisplayedCards();
+    for(const card of cards) {
+        if(card.querySelector("select :nth-child(2)").selected == true) {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+    }
+};
+
+const filterByDone = () => {
+    resetDisplay();
+    const cards = getDisplayedCards();
+    for(const card of cards) {
+        if(card.querySelector("select :nth-child(3)").selected == true) {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+    }
+};
+
+const filter = () => {
+    switch(filterType) {
+        case 1: filterByTodo();
+        break;
+        case 2: filterByDoing();
+        break;
+        case 3: filterByDone();
+        break;
+    }
 };
 
 const sortByName = (cards) => {
@@ -47,8 +109,8 @@ const sortByName = (cards) => {
         }
     });
     
-    for(const task of cardsArray) {
-        tasksDisplay.append(task);
+    for(const card of cardsArray) {
+        tasksDisplay.append(card);
     }
 }
 
@@ -60,13 +122,13 @@ const sortByUrgence = (cards) => {
         return Number(a.querySelector("p").getAttribute("days-left")) - Number(b.querySelector("p").getAttribute("days-left"));
     });
 
-    for(const task of cardsArray) {
-        tasksDisplay.append(task);
+    for(const card of cardsArray) {
+        tasksDisplay.append(card);
     }
 } ;
 
 const sort = () => {
-    const cards = document.querySelectorAll(".card");
+    const cards = getDisplayedCards();
     switch(sortType) {
         case 1: sortByUrgence(cards);
         break;
@@ -77,7 +139,7 @@ const sort = () => {
 
 const refresh = () => {
     sort();
-    // filter();
+    filter();
 };
 
 const msToDays = (ms) => {
@@ -100,14 +162,24 @@ const displayRemaining = (e) => {
         remaining.setAttribute("days-left", `${daysRemaining}`);
     }
 
-    //refresh();
+    refresh();
+};
+
+const resetFilter = () =>{
+    resetDisplay();
+    filterType = 0;
+    todoFilter.checked = false;
+    doingFilter.checked = false;
+    doneFilter.checked = false;
+    all.checked = true;
+    refresh();
 };
 
 const generateTask = (task) => {
     const card = document.createElement("div");
     card.setAttribute("ID", task.ID);
     card.classList.add("card");
-    //resetFilter();
+    resetFilter();
 
     const nameInput = document.createElement("input");
     nameInput.type = "text";
@@ -204,8 +276,7 @@ const generateTask = (task) => {
 
     tasksDisplay.append(card);
 
-    //refresh();
-    //checkFilters();
+    refresh();
 };
 
 const resetForm = () => {
@@ -249,3 +320,29 @@ const enableSortByUrgence = () => {
 
 urgenceSort.addEventListener("click", enableSortByUrgence);
 nameSort.addEventListener("click", enableSortByName);
+
+const enableTodoFilter = () => {
+    filterType = 1;
+    todoFilter.checked = true;
+    all.checked = false;
+    refresh();
+};
+
+const enableDoingfilter = () => {
+    filterType = 2;
+    doingFilter.checked = true;
+    all.checked = false;
+    refresh()
+};
+
+const enableDoneFilter = () => {
+    filterType = 3;
+    doneFilter.checked = true;
+    all.checked = false;
+    refresh();
+};
+
+all.addEventListener("click", resetFilter);
+todoFilter.addEventListener("click", enableTodoFilter);
+doingFilter.addEventListener("click", enableDoingfilter);
+doneFilter.addEventListener("click", enableDoneFilter);
