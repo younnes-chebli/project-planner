@@ -155,6 +155,12 @@ const generateTask = (task) => {
     //checkFilters();
 };
 
+const resetForm = () => {
+    document.getElementById("name").value = "";
+    document.getElementById("description").value = "";
+    document.getElementById("dueDate").value = "";
+};
+
 const generateTasks = (taskList) => {
     tasksDisplay.innerHTML = "";
     for(const task of taskList) {
@@ -171,6 +177,7 @@ taskForm.addEventListener("submit", (e) => {
     taskList.push(formData);
     save();
     generateTasks(taskList);
+    resetForm();
 });
 
 if(lsTasks != null) {
