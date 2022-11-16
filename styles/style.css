@@ -32,11 +32,25 @@ header {
     margin-bottom: 2rem;
 }
 
-#create {
-    font-size: 4rem;
+fieldset {
+    width: fit-content;
+    margin-bottom: 1rem;
 }
 
-#cards {
+form {
+    display: flex;
+    align-items: center;
+}
+
+form * {
+    margin-right: 0.3rem;
+}
+
+#create {
+    font-size: 3rem;
+}
+
+#tasks {
     display: flex;
     flex-wrap: wrap;
 }
@@ -99,7 +113,7 @@ button {
 }
 
 button:hover {
-    cursor:grab;
+    cursor:pointer;
 }
 
 .trash {

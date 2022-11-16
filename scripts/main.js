@@ -1,75 +1,85 @@
-const createButton = document.getElementById("create");
-const cards = document.getElementById("cards");
+const taskForm = document.getElementById("task-form");
+const tasksDisplay = document.getElementById("tasks");
+let taskList = [];
 const max = Number.MAX_VALUE;
+const lsTasks = localStorage.getItem("tasks");
+let parsedLsTasks;
+let nextID;
+if(lsTasks != null) {
+    parsedLsTasks = JSON.parse(lsTasks);
+    for(const parsedLsTask of parsedLsTasks) {
+        taskList.push(parsedLsTask);
+    }
+    nextID = parsedLsTasks[parsedLsTasks.length - 1].ID + 1;
+} else {
+    nextID = 1;
+}
 //0: none, 1: urgence, 2: name
 var sortType = 0;
 //0: none, 1: todo, 2: doing, 3: done
 var filterType = 0;
 const urgenceSort = document.getElementById("urgence-sort");
-const all = document.getElementById("all");
 const nameSort = document.getElementById("name-sort");
+const all = document.getElementById("all");
 const todoFilter = document.getElementById("todo");
 const doingFilter = document.getElementById("doing");
 const doneFilter = document.getElementById("done");
-var actualTasks = document.querySelectorAll(".card");
 
-const disableFilters = () => {
-    todoFilter.disabled = true;
-    doingFilter.disabled = true;
-    doneFilter.disabled = true;
-    all.disabled = true;
+const save = () => {
+    localStorage.setItem("tasks", JSON.stringify(taskList));
 };
 
-const activateFilters = () => {
-    todoFilter.disabled = false;
-    doingFilter.disabled = false;
-    doneFilter.disabled = false;
-    all.disabled = false;
+const emptyLS = () => {
+    localStorage.removeItem("tasks");
 };
 
-const checkFilters = () => {
-    if(actualTasks.length == 0) {
-        disableFilters();
-    } else {
-        activateFilters();
-    }
+const noCards = () => {
+    return document.querySelectorAll(".card").length == 0;
+};
+
+const getDisplayedCards = () => {
+    return document.querySelectorAll(".card");
 };
 
 const resetDisplay = () => {
-    for(const task of actualTasks) {
-        task.style.display = "block";
+    const cards = getDisplayedCards();
+    for(const card of cards) {
+        card.style.display = "block";
     }
 };
 
 const filterByTodo = () => {
     resetDisplay();
-    for(const task of actualTasks) {
-        if(task.querySelector("select :nth-child(2)").selected == true) {
-            task.style.display = "block";
+    const cards = getDisplayedCards();
+    for(const card of cards) {
+        if(card.querySelector("select :nth-child(1)").selected == true) {
+            card.style.display = "block";
         } else {
-            task.style.display = "none";
+            card.style.display = "none";
         }
     }
 };
 
 const filterByDoing = () => {
     resetDisplay();
-    for(const task of actualTasks) {
-        if(task.querySelector("select :nth-child(3)").selected == true) {
-            task.style.display = "block";
+    const cards = getDisplayedCards();
+    for(const card of cards) {
+        if(card.querySelector("select :nth-child(2)").selected == true) {
+            card.style.display = "block";
         } else {
-            task.style.display = "none";
+            card.style.display = "none";
         }
     }
 };
 
 const filterByDone = () => {
     resetDisplay();
-    for(const task of actualTasks) {
-        if(task.querySelector("select :nth-child(4)").selected == true) {
-            task.style.display = "block";
+    const cards = getDisplayedCards();
+    for(const card of cards) {
+        if(card.querySelector("select :nth-child(3)").selected == true) {
+            card.style.display = "block";
         } else {
-            task.style.display = "none";
+            card.style.display = "none";
         }
     }
 };
@@ -85,11 +95,11 @@ const filter = () => {
     }
 };
 
-const sortByName = (tasks) => {
-    const tasksArray = Array.from(tasks);
-    cards.innerHTML = "";
+const sortByName = (cards) => {
+    const cardsArray = Array.from(cards);
+    tasksDisplay.innerHTML = "";
     
-    tasksArray.sort((a, b) => {
+    cardsArray.sort((a, b) => {
         if(a.querySelector("input").value < b.querySelector("input").value) {
             return -1;
         } else if (a.querySelector("input").value > b.querySelector("input").value) {
@@ -99,29 +109,30 @@ const sortByName = (tasks) => {
         }
     });
     
-    for(const task of tasksArray) {
-        cards.append(task);
+    for(const card of cardsArray) {
+        tasksDisplay.append(card);
     }
-};
+}
 
-const sortByUrgence = (tasks) => {
-    const tasksArray = Array.from(tasks);
-    cards.innerHTML = "";
+const sortByUrgence = (cards) => {
+    const cardsArray = Array.from(cards);
+    tasksDisplay.innerHTML = "";
 
-    tasksArray.sort((a, b) => {
+    cardsArray.sort((a, b) => {
         return Number(a.querySelector("p").getAttribute("days-left")) - Number(b.querySelector("p").getAttribute("days-left"));
     });
 
-    for(const task of tasksArray) {
-        cards.append(task);
+    for(const card of cardsArray) {
+        tasksDisplay.append(card);
     }
 } ;
 
 const sort = () => {
+    const cards = getDisplayedCards();
     switch(sortType) {
-        case 1: sortByUrgence(actualTasks);
+        case 1: sortByUrgence(cards);
         break;
-        case 2: sortByName(actualTasks);
+        case 2: sortByName(cards);
         break;
     }
 };
@@ -144,10 +155,9 @@ const displayRemaining = (e) => {
     remaining.innerHTML = "";
     const dateStringIn = e.target.value;
     const dateInMs = Date.parse(dateStringIn);
-    let daysRemaining;
 
     if(!isBefore(dateInMs)) {
-        daysRemaining = msToDays(dateInMs) - msToDays(Date.now());
+        const daysRemaining = msToDays(dateInMs) - msToDays(Date.now());
         remaining.innerHTML = `in ${daysRemaining} days!`;
         remaining.setAttribute("days-left", `${daysRemaining}`);
     }
@@ -165,8 +175,9 @@ const resetFilter = () =>{
     refresh();
 };
 
-const createTask = () => {
+const generateTask = (task) => {
     const card = document.createElement("div");
+    card.setAttribute("ID", task.ID);
     card.classList.add("card");
     resetFilter();
 
@@ -174,14 +185,16 @@ const createTask = () => {
     nameInput.type = "text";
     nameInput.classList.add("name");
     nameInput.placeholder = "task name";
+    nameInput.value = task.name;
+    nameInput.addEventListener("input", (e) => {
+        taskToUpdate = taskList.filter(el => el.ID === task.ID);
+        const i =  taskList.indexOf(taskToUpdate[0]);
+        taskList[i].name = e.target.value;
+        save();
+    });
 
     const statusSelect = document.createElement("select");
     statusSelect.classList.add("status-select");
-    const status = document.createElement("option");
-    status.value = "";
-    status.innerHTML = "STATUS";
-    status.selected= true;
-    status.disabled = true;
     const todoOption = document.createElement("option");
     todoOption.value = "todo";
     todoOption.innerHTML = "TO DO";
@@ -191,26 +204,53 @@ const createTask = () => {
     const doneOption = document.createElement("option");
     doneOption.value = "done";
     doneOption.innerHTML = "DONE";
-    statusSelect.append(status, todoOption, doingOption, doneOption);
+    statusSelect.append(todoOption, doingOption, doneOption);
+    statusSelect.value = task.status;
+    statusSelect.addEventListener("change", (e) => {
+        taskToUpdate = taskList.filter(el => el.ID === task.ID);
+        console.log(e.target.value)
+        const i =  taskList.indexOf(taskToUpdate[0]);
+        taskList[i].status = e.target.value;
+        save();
+    });
 
     const description = document.createElement("textarea");
     description.classList.add("description");
     description.cols = "25";
     description.rows = "5";
     description.placeholder = "description";
+    description.innerHTML = task.description;
+    description.addEventListener("input", (e) => {
+        taskToUpdate = taskList.filter(el => el.ID === task.ID);
+        const i =  taskList.indexOf(taskToUpdate[0]);
+        taskList[i].description = e.target.value;
+        save();
+    });
 
     const dueDateC = document.createElement("div");
     dueDateC.classList.add("due-date");
     const dueDateLabel = document.createElement("label");
     dueDateLabel.innerHTML = "Due date";
     const dueDateInput = document.createElement("input");
-    dueDateInput.addEventListener("change", displayRemaining);
     dueDateInput.type = "date";
+    dueDateInput.value = task.dueDate;
     dueDateC.append(dueDateLabel, dueDateInput);
+    dueDateInput.addEventListener("change", displayRemaining);
+    dueDateInput.addEventListener("change", (e) => {
+        taskToUpdate = taskList.filter(el => el.ID === task.ID);
+        const i =  taskList.indexOf(taskToUpdate[0]);
+        taskList[i].dueDate = e.target.value;
+        save();
+    });
 
     const remaining = document.createElement("p");
     remaining.classList.add("remaining");
     remaining.setAttribute("days-left", `${max}`);
+    if(!isBefore(Date.parse(task.dueDate)) && task.dueDate != "") {
+        const daysRemaining = msToDays(Date.parse(task.dueDate)) - msToDays(Date.now());
+        remaining.innerHTML = `in ${daysRemaining} days!`;
+        remaining.setAttribute("days-left", `${daysRemaining}`);
+    }
 
     const trashC = document.createElement("div");
     trashC.classList.add("trash-c");
@@ -219,17 +259,54 @@ const createTask = () => {
     trashFont.classList.add("fa-solid", "fa-trash", "trash");
     trashB.append(trashFont);
     trashC.append(trashB);
+    trashB.addEventListener("click", (e) => {
+        taskToUpdate = taskList.filter(el => el.ID === task.ID);
+        const i =  taskList.indexOf(taskToUpdate[0]);
+        card.remove();
+        if(noCards()) {
+            taskList = [];
+            emptyLS();
+        } else {
+            taskList.splice(i, 1);
+            save();    
+        }
+    });
 
     card.append(nameInput, statusSelect, description, dueDateC, remaining, trashC);
 
-    cards.append(card);
+    tasksDisplay.append(card);
 
-    actualTasks = document.querySelectorAll(".card");
     refresh();
-    checkFilters();
 };
 
-createButton.addEventListener("click", createTask);
+const resetForm = () => {
+    document.getElementById("name").value = "";
+    document.getElementById("description").value = "";
+    document.getElementById("dueDate").value = "";
+};
+
+const generateTasks = (taskList) => {
+    tasksDisplay.innerHTML = "";
+    for(const task of taskList) {
+        generateTask(task);
+    }
+} ;
+
+taskForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const formData = Object.fromEntries(new FormData(taskForm));
+    formData.ID = nextID;
+    formData.status = "todo";
+    nextID++;
+    taskList.push(formData);
+    save();
+    generateTasks(taskList);
+    resetForm();
+});
+
+if(lsTasks != null) {
+    generateTasks(parsedLsTasks);   
+}
 
 const enableSortByName = () => {
     sortType = 2;
@@ -269,5 +346,3 @@ all.addEventListener("click", resetFilter);
 todoFilter.addEventListener("click", enableTodoFilter);
 doingFilter.addEventListener("click", enableDoingfilter);
 doneFilter.addEventListener("click", enableDoneFilter);
-
-checkFilters();
