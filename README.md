@@ -16,3 +16,4 @@ Creating a tool to manage our projects and to track the progression of each requ
 * Sort tasks by urgence or by name
 * Filter tasks by status
 * Save tasks in LocalStorage
+* Delete tasks

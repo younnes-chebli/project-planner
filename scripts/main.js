@@ -12,11 +12,19 @@ if(lsTasks != null) {
     }
     nextID = parsedLsTasks[parsedLsTasks.length - 1].ID + 1;
 } else {
-    nextID = 0;
+    nextID = 1;
 }
 
 const save = () => {
     localStorage.setItem("tasks", JSON.stringify(taskList));
+};
+
+const emptyLS = () => {
+    localStorage.removeItem("tasks");
+};
+
+const noCards = () => {
+    return document.querySelectorAll(".card").length == 0;
 };
 
 const msToDays = (ms) => {
@@ -62,9 +70,6 @@ const generateTask = (task) => {
 
     const statusSelect = document.createElement("select");
     statusSelect.classList.add("status-select");
-    const noStatus = document.createElement("option");
-    noStatus.value = "noStatus";
-    noStatus.innerHTML = "NO STATUS";
     const todoOption = document.createElement("option");
     todoOption.value = "todo";
     todoOption.innerHTML = "TO DO";
@@ -74,10 +79,14 @@ const generateTask = (task) => {
     const doneOption = document.createElement("option");
     doneOption.value = "done";
     doneOption.innerHTML = "DONE";
-    statusSelect.value = task.statusSelect
-    statusSelect.append(noStatus, todoOption, doingOption, doneOption);
+    statusSelect.append(todoOption, doingOption, doneOption);
+    statusSelect.value = task.status;
     statusSelect.addEventListener("change", (e) => {
-
+        taskToUpdate = taskList.filter(el => el.ID === task.ID);
+        console.log(e.target.value)
+        const i =  taskList.indexOf(taskToUpdate[0]);
+        taskList[i].status = e.target.value;
+        save();
     });
 
     const description = document.createElement("textarea");
@@ -87,7 +96,10 @@ const generateTask = (task) => {
     description.placeholder = "description";
     description.innerHTML = task.description;
     description.addEventListener("input", (e) => {
-
+        taskToUpdate = taskList.filter(el => el.ID === task.ID);
+        const i =  taskList.indexOf(taskToUpdate[0]);
+        taskList[i].description = e.target.value;
+        save();
     });
 
     const dueDateC = document.createElement("div");
@@ -100,7 +112,10 @@ const generateTask = (task) => {
     dueDateC.append(dueDateLabel, dueDateInput);
     dueDateInput.addEventListener("change", displayRemaining);
     dueDateInput.addEventListener("change", (e) => {
-
+        taskToUpdate = taskList.filter(el => el.ID === task.ID);
+        const i =  taskList.indexOf(taskToUpdate[0]);
+        taskList[i].dueDate = e.target.value;
+        save();
     });
 
     const remaining = document.createElement("p");
@@ -120,7 +135,16 @@ const generateTask = (task) => {
     trashB.append(trashFont);
     trashC.append(trashB);
     trashB.addEventListener("click", (e) => {
-
+        taskToUpdate = taskList.filter(el => el.ID === task.ID);
+        const i =  taskList.indexOf(taskToUpdate[0]);
+        card.remove();
+        if(noCards()) {
+            taskList = [];
+            emptyLS();
+        } else {
+            taskList.splice(i, 1);
+            save();    
+        }
     });
 
     card.append(nameInput, statusSelect, description, dueDateC, remaining, trashC);
@@ -142,10 +166,9 @@ taskForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const formData = Object.fromEntries(new FormData(taskForm));
     formData.ID = nextID;
+    formData.status = "todo";
     nextID++;
-    console.log(taskList);
     taskList.push(formData);
-    console.log(taskList);
     save();
     generateTasks(taskList);
 });
